@@ -1,0 +1,38 @@
+{
+  "name": "fp-scraper",
+  "version": "1.0.0",
+  "description": "simple, non-production ready, web scraper done in js using a functional programming style",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "mocha --require babel-core/register"
+  },
+  "keywords": [
+    "javascript",
+    "fantasy-land",
+    "functional",
+    "scraping"
+  ],
+  "author": "rjbma",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "fluture": "^7.2.2",
+    "ramda": "^0.25.0",
+    "request": "^2.83.0",
+    "sanctuary": "^0.13.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "semi": false,
+    "trailingComma": "es5",
+    "singleQuote": true
+  }
+}
