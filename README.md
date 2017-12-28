@@ -13,4 +13,15 @@ These libraries do most of the heavy lifting:
 - [Fluture](https://github.com/fluture-js/Fluture): for the implementation of `Future`
 
 # I want to use this. What do I do?
-Currently, there's no library on **npm**, probably never will be. Just fork it, change it, and use it as you like.
+Currently, there's no library on **npm**, probably never will be. 
+
+Interesting stuff is in the `scraper.js` file. You should probably leave the `scrapeUrl` function alone, and just build your own decoder functions (those will depend on the web pages you want to scrape. Look at `decodeMovie` and `decodeActorMovieUrls` for examples). 
+
+Each decoder function is then passed as an argument to `scrapeUrl` which will return a `Future`. You can keep adding stuff to your scraping pipeline by mapping and chaining on that `Future` until you're ready to fork it. 
+
+If anything of this is new to you, I really recommend reading the article above, in which I describe in excruciating detail how I got to this solution.
+
+# Tests
+There are some tests, specifically for the utility functions that define the API for **cheerio** and **request**. To run them:
+
+    npm test
