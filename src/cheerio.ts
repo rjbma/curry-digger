@@ -1,5 +1,6 @@
 import * as cheerio from "cheerio";
 import * as request from "request";
+import puppeteer from "puppeteer";
 import { Either, Task, TaskType, Utils } from "curry-types";
 
 const loadDom = (domStr: string) => Task.of(cheerio.load(domStr));
@@ -50,7 +51,7 @@ const attr = (attrName: string) => (dom: cheerio.CheerioAPI) => {
 //       .map((el) => innerText(el))
 //       .chain(Either.fromNullable(defaultValue));
 
-const getHtml = (url: string) =>
+const getHtmlWithRequest = (url: string) =>
   Task.fromPromise(
     () =>
       new Promise<string>((res, rej) => {
@@ -64,6 +65,15 @@ const getHtml = (url: string) =>
         });
       })
   );
+
+const getHtml = (url: string) =>
+  Task.fromPromise(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: "networkidle0" });
+    const html = await page.content();
+    return html;
+  });
 
 const scrapeUrl =
   <T>(strategy: (dom: cheerio.CheerioAPI) => TaskType<Error, T>) =>

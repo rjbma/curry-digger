@@ -29,6 +29,7 @@
   "dependencies": {
     "cheerio": "^1.1.2",
     "curry-types": "^0.2.0",
+    "puppeteer": "^24.16.2",
     "request": "^2.88.2"
   }
 }
