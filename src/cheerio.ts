@@ -1,42 +1,42 @@
-import * as cheerio from "cheerio";
-import * as request from "request";
-import puppeteer from "puppeteer";
-import { Either, Task, TaskType, Utils } from "curry-types";
+import * as cheerio from 'cheerio'
+import * as request from 'request'
+import puppeteer from 'puppeteer'
+import { Either, Task, TaskType, Utils } from 'curry-types'
 
-const loadDom = (domStr: string) => Task.of(cheerio.load(domStr));
+const loadDom = (domStr: string) => Task.of(cheerio.load(domStr))
 
 const selectAll = (sel: string) => (dom: cheerio.CheerioAPI) =>
   Task.of(
     dom(sel)
       .toArray()
-      .map((el) => cheerio.load(el))
-  );
+      .map(el => cheerio.load(el)),
+  )
 
 const selectFirst = (sel: string) => (dom: cheerio.CheerioAPI) =>
-  selectAll(sel)(dom).chain((els) =>
-    Task.fromNullable(`No elements found for selector: ${sel}`)(els[0])
-  );
+  selectAll(sel)(dom).chain(els =>
+    Task.fromNullable(`No elements found for selector: ${sel}`)(els[0]),
+  )
 
-const html = (dom: cheerio.CheerioAPI) => Task.of(dom.html());
+const html = (dom: cheerio.CheerioAPI) => Task.of(dom.html())
 
 // Gets the string content the given element, INCLUDING its children elements
-const text = (dom: cheerio.CheerioAPI) => Task.of(dom.text().trim());
+const text = (dom: cheerio.CheerioAPI) => Task.of(dom.text().trim())
 
 // innerText :: Dom -> String
 // Gets the string content the given element, EXCLUDING its children elements
 const innerText = (dom: cheerio.CheerioAPI) =>
   Task.of(
-    dom("*")
+    dom('*')
       .contents()
-      .filter((i, el) => el.type == "text")
+      .filter((i, el) => el.type == 'text')
       .text()
-      .trim()
-  );
+      .trim(),
+  )
 
 const attr = (attrName: string) => (dom: cheerio.CheerioAPI) => {
-  const attr = dom("*").attr(attrName);
-  return Task.fromNullable(`Attribute ${attrName} not found`)(attr);
-};
+  const attr = dom('*').attr(attrName)
+  return Task.fromNullable(`Attribute ${attrName} not found`)(attr)
+}
 
 // // Helper function for getting the text of required elements
 // const required =
@@ -55,31 +55,31 @@ const getHtmlWithRequest = (url: string) =>
   Task.fromPromise(
     () =>
       new Promise<string>((res, rej) => {
-        const opts = { method: "GET", uri: url };
+        const opts = { method: 'GET', uri: url }
         request.get(opts, (error, response, body) => {
           if (error) {
-            rej(error);
+            rej(error)
           } else {
-            res(body);
+            res(body)
           }
-        });
-      })
-  );
+        })
+      }),
+  )
 
 const getHtml = (url: string) =>
   Task.fromPromise(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle0" });
-    const html = await page.content();
-    return html;
-  });
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+    await page.goto(url, { waitUntil: 'networkidle0' })
+    const html = await page.content()
+    return html
+  })
 
 const scrapeUrl =
   <T>(strategy: (dom: cheerio.CheerioAPI) => TaskType<Error, T>) =>
   (url: string): TaskType<Error, T> => {
-    return getHtml(url).chain(Cheerio.loadDom).chain(strategy);
-  };
+    return getHtml(url).chain(Cheerio.loadDom).chain(strategy)
+  }
 
 const Cheerio = {
   loadDom,
@@ -92,6 +92,6 @@ const Cheerio = {
   // required,
   // optional,
   scrapeUrl,
-};
+}
 
-export { Cheerio };
+export { Cheerio }
